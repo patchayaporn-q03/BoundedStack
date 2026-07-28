@@ -2,14 +2,16 @@ import java.util.*;
 
 /**
  * ทำโดย 6821651531 พัชญาพร จันอุดม หมู่800 และ 6821651621 ภัทราภรณ์ หินขุนทด หมู่800
- * BoundedStack คือ
+ * BoundedStack คือการเก็บข้อมูลในรูปแบบ Stack มีการกำหนด capacity เอาไว้ และการทำงานคือเข้าทีหลังออกก่อน 
+ *              มีฟังก์ชัน Push การเพิ่มข้อมูลตำแหน่งแรกเข้าไปใน Stack , Pop อ่านข้อมูลตำแหน่งสุดท้าย และลบข้อมูลนั้น
+ *              Peek อ่านข้อมูลตำแหน่งสุดท้าย แต่ไม่ลบ , IsEmpty ดูข้อมูลใน Stack ว่าว่างไหม
  * 
  * ตัวอย่างการใช้งาน:การเก็บรหัสพนักงานที่ลงทะเบียนเข้ามา
  *      BoundedStack s = new BoundedStack(50);
  *      s.push("b6821651531");
  *      s.push("b6821651621");
  *      String now = s.peek(); // peek() = ดูข้อมูลที่ถูก push เข้ามาล่าสุด คือ "b6821651621"
- *      String removed = s.pop(); // pop(); = ดึงข้อมูลที่ถูก push เข้ามาล่าสุดออก คือ "b6821651621"
+ *      String remove = s.pop(); // pop(); = ดึงข้อมูลที่ถูก push เข้ามาล่าสุดออก คือ "b6821651621"
  */
 public class BoundedStack {
 
@@ -50,5 +52,84 @@ public class BoundedStack {
         this.data = new ArrayList<>(capacity);
         checkRep();
     }
+
+    public BoundedStack(List<String> initial) {
+        if(initial==null) throw new IllegalArgumentException();
+        this.capacity = initial.size();
+        Set<String> seen = new HashSet<>();
+        for(String s : initial){
+            if (s==null) throw new IllegalArgumentException();
+            if (s.isEmpty()) throw new IllegalArgumentException();
+            if (!seen.add(s)) throw new IllegalArgumentException();
+        }
+        this.data = new ArrayList<>(initial);
+        checkRep();
+    }
+
+    /**
+     * 
+     * @return จำนวนข้อมูลที่ถูก push เข้ามา
+     */
+    public int size() {
+        return data.size();
+    }
+
+    /**
+     * 
+     * @return true ถ้า Stack ว่าง
+     */
+    public boolean isEmpty() {
+        return data.isEmpty();
+    }
+
+    /**
+     * input ข้อมูลเข้ามาเก็บใน Stack
+     * 
+     * @param data ข้อมูลที่จะ input เข้ามา และต้องไม่เป็น null
+     * @return true เมื่อเพิ่มข้อมูลสำเร็จ, false ถ้าเพิ่มข้อมูลไม่สำเร็จหรือเต็มแล้ว
+     * @throws IllegalArgumentException ถ้า data เป็น null , มีข้อมูลซ้ำกัน หรือเป็นสตริงว่าง
+     * @throws IllegalStateException ถ้าเก็บข้อมูลเต็มแล้ว (size เท่ากับ capacity)
+     */
+    public boolean push(String data){
+        if (data == null || data.isEmpty()) throw new IllegalArgumentException();
+        if (this.data.contains(data)) throw new IllegalArgumentException("duplicate employee id: " + data);
+        if (isFull()) throw new IllegalStateException("Stack is full: capacity = " + capacity);
+        this.data.add(data);
+        checkRep();
+        return true;
+    }
+
+    /**
+     * นำข้อมูลที่ input เข้ามาล่าสุดออกจาก Stack แล้วคืนค่ากลับ
+     * 
+     * @return ข้อมูลที่ถูก push เข้ามาล่าสุด
+     * @throws IllegalStateException ถ้า Stack ว่าง
+     */
+    public String pop(){
+        if (data.isEmpty()) throw new IllegalStateException("Stack is empty");
+        String remove = data.remove(data.size() - 1);
+        checkRep();
+        return remove;
+    }
+
+    /**
+     * ดูข้อมูลที่ถูก push เข้ามาล่าสุด แต่ไม่ลบ
+     * 
+     * @return ข้อมูลที่ถูก push เข้ามาล่าสุด
+z    * @throws IllegalStateException ถ้า Stack ว่าง
+     */
+    public String peek(){
+        if (data.isEmpty()) throw new IllegalStateException("Stack is empty");
+        return data.get(data.size() - 1);
+    }
+
+    /**
+     * ดู Stack ว่าเต็มหรือยัง
+     * 
+     * @return true ถ้า Stack เต็ม, false ถ้า Stack ยังไม่เต็ม
+     */
+	public boolean isFull() {
+	    return data.size() >= capacity;
+	}
 
 }
