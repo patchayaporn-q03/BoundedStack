@@ -215,8 +215,28 @@ public class BoundedStackTest {
 
     }
 
-    // --- Producer ต้องคืนตัวใหม่ ไม่แก้ตัวเดิม ---
+    // --- Producer ต้องคืนตัวใหม่ และไม่ส่งผลต่อตัวเดิม ---
     private static void testProducer() {
+        System.out.println("\n-- Producer (copy) --");
+
+        //สร้างoriginalที่มีข้อมูล 3 ตัว
+        BoundedStack original = new BoundedStack(3);
+        original.push("b6821651531");
+        original.push("b6821651621");
+        original.push("b6821650003");
+
+        // copy() แล้วเช็คว่าได้ objectใหม่ที่ไม่ใช่ original
+        BoundedStack copy = original.copy();
+        check("copy is a new object", copy != original);
+
+        // เช็คว่าแก้ไขข้อมูลใน copy แล้วไม่ส่งผลต่อ original
+        check("copy has same top as original right after copy()", copy.peek().equals(original.peek()));
+        copy.pop();
+        check("pop() on copy does not affect original", copy.size() == 2 ); 
+        check("original is unchanged", original.size() == 3);
+
+        // เช็คว่าหลังpushหรือpop ข้อมูลยังเรียงถูกต้อง
+        check("copy peek() is correct", copy.peek().equals("b6821651621"));
 
     }
 
