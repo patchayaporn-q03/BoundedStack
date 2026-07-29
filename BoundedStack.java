@@ -51,27 +51,6 @@ public class BoundedStack {
         checkRep();
     }
 
-    /**
-     * สร้าง BoundedStack พร้อมข้อมูลเริ่มต้น
-     * 
-     * ระวัง:ห้ามเก็บ reference ของ initial ตรง ๆ (rep exposure!)
-     * 
-     * @param initial ข้อมูลเริ่มต้นที่ต้องไม่เป็น null, ไม่มีข้อมูลซ้ำกัน, ไม่มีข้อมูลเป็น null หรือเป็นสตริงว่าง
-     * @throws IllegalArgumentException ถ้าinitialเป็น null, มีข้อมูลซ้ำกัน, มีข้อมูลเป็นnullหรือเป็นสตริงว่าง
-     */
-    public BoundedStack(List<String> initial) {
-        if(initial==null) throw new IllegalArgumentException();
-        this.capacity = initial.size();
-        Set<String> seen = new HashSet<>();
-        for(String s : initial){
-            if (s==null) throw new IllegalArgumentException();
-            if (s.isEmpty()) throw new IllegalArgumentException();
-            if (!seen.add(s)) throw new IllegalArgumentException();
-        }
-        this.data = new ArrayList<>(initial);
-        checkRep();
-    }
-
     /** 
      * @return จำนวนข้อมูลที่ถูก push เข้ามา
      */
@@ -90,17 +69,14 @@ public class BoundedStack {
      * input ข้อมูลเข้ามาเก็บใน Stack
      * 
      * @param data ข้อมูลที่จะ input เข้ามา และต้องไม่เป็น null
-     * @return true เมื่อเพิ่มข้อมูลสำเร็จ, false ถ้าเพิ่มข้อมูลไม่สำเร็จหรือเต็มแล้ว
-     * @throws IllegalArgumentException ถ้า data เป็น null , มีข้อมูลซ้ำกัน หรือเป็นสตริงว่าง
+     * @throws IllegalArgumentException ถ้า data เป็น null หรือเป็นสตริงว่าง
      * @throws IllegalStateException ถ้าเก็บข้อมูลเต็มแล้ว (size เท่ากับ capacity)
      */
-    public boolean push(String data){
+    public void push(String data){
         if (data == null || data.isEmpty()) throw new IllegalArgumentException();
-        if (this.data.contains(data)) throw new IllegalArgumentException("duplicate employee id: " + data);
-        if (isFull()) throw new IllegalStateException("Stack is full: capacity = " + capacity);
+        if (isFull()) throw new IllegalStateException("Stack is full: capacity");
         this.data.add(data);
         checkRep();
-        return true;
     }
 
     /**
@@ -120,7 +96,7 @@ public class BoundedStack {
      * ดูข้อมูลที่ถูก push เข้ามาล่าสุด แต่ไม่ลบ
      * 
      * @return ข้อมูลที่ถูก push เข้ามาล่าสุด
-z    * @throws IllegalStateException ถ้า Stack ว่าง
+     * @throws IllegalStateException ถ้า Stack ว่าง
      */
     public String peek(){
         if (data.isEmpty()) throw new IllegalStateException("Stack is empty");
@@ -137,12 +113,22 @@ z    * @throws IllegalStateException ถ้า Stack ว่าง
 	}
 
     /**
-     * คืนStackใหม่ที่มีข้อมูลเหมือนกัน แต่สลับลำดับ
-     * ระวัง: ห้ามแก้เพลย์ลิสต์เดิม (this) เด็ดขาด
-     * @return Stack ใหม่ที่สลับลำดับแล้ว
+     * สร้าง BoundedStack ตัวใหม่ที่มีข้อมูลและ capacity เหมือนเดิม
+     * 
+     * @return ข้อมูลใหม่ที่ copy ข้อมูลเดิมมา
      */
-    public BoundedStack shuffled() {
-        return null; 
+    public BoundedStack copy() {
+        BoundedStack copy = new BoundedStack(this.capacity);
+        copy.data.addAll(this.data);
+        copy.checkRep();
+        return copy;
     }
-
+    
+    /**
+     * 
+     * @return
+     */
+    public List<String> data() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 }
