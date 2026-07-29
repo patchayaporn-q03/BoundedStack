@@ -87,7 +87,7 @@ public class BoundedStackTest {
         check("new(null) -> throws IllegalArgumentException", threwNullList);
     }
 
-    // Push ข้อมูลที่ผิดเงื่อนไข
+    // --- Push ข้อมูลที่ผิดเงื่อนไข ---
     private static void testPush() {
         System.out.println("\n-- Push --");
 
@@ -141,7 +141,7 @@ public class BoundedStackTest {
 
     }
 
-    // การ Pop ข้อมูลที่ผิดเงื่อนไข
+    // --- การ Pop ข้อมูลที่ผิดเงื่อนไข ---
     public static void testPop() {
         System.out.println("\n-- Pop --");
 
@@ -181,7 +181,7 @@ public class BoundedStackTest {
 
     }
 
-    // การอ่านข้อมูลที่ตำแหน่งสุดท้าย
+    // --- การอ่านข้อมูลที่ตำแหน่งสุดท้าย ---
     private static void testpeek() {
         System.out.println("\n-- Peek --");
 
@@ -198,20 +198,35 @@ public class BoundedStackTest {
         // ถ้า Stack มีข้อมูล 1 ตัว peek ต้องคืนค่าตัวนั้น
         BoundedStack first = new BoundedStack(3);
         first.push("b6821651531");
-        check("peek() one element -> b6821651531",
-            first.peek().equals("b6821651531"));
+        check("peek() one element -> b6821651531" , first.peek().equals("b6821651531"));
 
         // ถ้า Stack มีหลายตัว จะคืนค่าตัวบนสุด (ตัวที่ push ล่าสุด)
         BoundedStack many = new BoundedStack(3);
         many.push("b6821651531");
         many.push("b6821651621");
         many.push("b6821650003");
-        check("peek() returns top element", many.peek().equals("b6821650003"));
+        check("peek() returns top element" , many.peek().equals("b6821650003"));
 
     }
 
-    // --- Observer ต้องไม่มี side effect ความเป็นอื่น ---
+    // --- Observer ต้องไม่มี side effect ---
+    // Observer ไว้ตรวจเมธอด size , isEmpty , isFull , peek ว่าถ้ามีการเปลี่ยนแปลง ข้อมูลใน Stack จะไม่เปลี่ยน
     private static void testObservers() {
+        System.out.println("\n-- Observers --");
+
+        BoundedStack s = new BoundedStack(3);
+        s.push("b6821651531");
+        s.push("b6821651621");
+
+        int beforeSize = s.size();
+        String beforeTop = s.peek();
+
+        s.size();
+        s.isEmpty();
+        s.isFull();
+        s.peek();
+
+        check("Observers no side effects", s.size() == beforeSize && s.peek().equals(beforeTop));
 
     }
 
