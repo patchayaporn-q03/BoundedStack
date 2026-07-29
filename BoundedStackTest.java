@@ -144,12 +144,37 @@ public class BoundedStackTest {
 
     // การ Pop ข้อมูลที่ผิดเงื่อนไข
     public static void testPop() {
+        System.out.println("\n-- Pop --");
+
+        // ถ้าไม่มีข้อมูล ให้โยน exception ออกไป
+        BoundedStack empty = new BoundedStack(3);
+        boolean threwEmpty = false;
+        try {
+            empty.pop();
+        } catch (IllegalStateException e) {
+            threwEmpty = true;
+        }
+        check("pop() on empty -> throws IllegalStateException", threwEmpty);
+
+        // เช็คการดึงข้อมูลตัวล่าสุดออกมาและมีพื้นที่ว่างเพิ่มขึ้น
+        empty.push("b6821651531"); 
+        empty.push("b6821651621");
+        empty.push("b6821650003");
+        check("pop() -> size 2", empty.size() == 3);
+
+        // ดึงข้อมูลตัวล่าสุดออกมา
+        check("pop() -> returns b6821651621", empty.pop().equals("b6821650003"));
+        check("pop() -> size 1", empty.size() == 1);
+
+        // เหลือข้อมูลตัวแรก
+        check("peek() -> b6821651621", empty.peek().equals("b6821651621"));
+
 
     }
 
     // การ
     private static void testpeek() {
-
+        
     }
 
     // --- Observer ต้องไม่มี side effect ความเป็นอื่น ---
