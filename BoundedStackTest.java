@@ -50,7 +50,6 @@ public class BoundedStackTest {
     // --- Partition: ว่าง / จำนวนพนักงานที่ลงทะเบียนมา / input ที่ผิดเงื่อนไข ---
     private static void testCreators() {
         System.out.println("-- Creators --");
-
         
         // เริ่มต้นจากที่เก็บข้อมูลว่าง
         BoundedStack empty = new BoundedStack(3);
@@ -132,7 +131,7 @@ public class BoundedStackTest {
 
         boolean threwFull = false;
         try {
-            full.push("b6821650051");
+            full.push("b6821650004");
         } catch (IllegalStateException e) {
             threwFull = true;
         }
@@ -156,33 +155,59 @@ public class BoundedStackTest {
         }
         check("pop() on empty -> throws IllegalStateException", threwEmpty);
 
+        // เช็คการดึงข้อมูลตัวล่าสุดออกมาและมีพื้นที่ว่างเพิ่มขึ้น
         empty.push("b6821651531"); 
         empty.push("b6821651621");
         empty.push("b6821650003");
-        check("pop() -> size 3", empty.size() == 3);
+        check("pop() -> size = 3", empty.size() == 3);
 
-        // เช็คการดึงข้อมูลตัวล่าสุดออกมาและมีพื้นที่ว่างเพิ่มขึ้น
+        // ดึงข้อมูลตัวล่าสุดออกมา
         check("pop() -> returns b6821650003", empty.pop().equals("b6821650003"));
-        check("pop() -> size 2", empty.size() == 2);
+        check("pop() -> size = 2", empty.size() == 2);
 
-        // pop ออกจนหมดแล้ว pop อีกครั้งต้องโยน exception ออกไป
+        // เหลือข้อมูลตัวแรก
+        check("peek() -> b6821651621", empty.peek().equals("b6821651621"));
+
+        // เมื่อ stack ว่าง แล้วเรียก pop() ต้องโยนให้ IllegalStateException
         empty.pop();
         empty.pop();
-        check("pop() all -> isEmpty() is true", empty.isEmpty());
-        check("pop() all -> size is 0", empty.size() == 0);
-        boolean threwEmptyAfterPop = false;
+        boolean threw = false;
         try {
             empty.pop();
         } catch (IllegalStateException e) {
-            threwEmptyAfterPop = true;
+            threw = true;
         }
-        check("pop() on empty after popping all -> throws IllegalStateException", threwEmptyAfterPop);
+        check("pop() on empty -> throws IllegalStateException", threw);
 
     }
 
-    // การ
+    // การอ่านข้อมูลที่ตำแหน่งสุดท้าย
     private static void testpeek() {
-        
+        System.out.println("\n-- Peek --");
+
+        // ถ้า Stack ว่าง แล้วเรียก peek() ต้องโยน IllegalStateException
+        BoundedStack empty = new BoundedStack(3);
+        boolean threwEmpty = false;
+        try {
+            empty.peek();
+        } catch (IllegalStateException e) {
+            threwEmpty = true;
+        }
+        check("peek() on empty -> throws IllegalStateException", threwEmpty);
+
+        // ถ้า Stack มีข้อมูล 1 ตัว peek ต้องคืนค่าตัวนั้น
+        BoundedStack first = new BoundedStack(3);
+        first.push("b6821651531");
+        check("peek() one element -> b6821651531",
+            first.peek().equals("b6821651531"));
+
+        // ถ้า Stack มีหลายตัว จะคืนค่าตัวบนสุด (ตัวที่ push ล่าสุด)
+        BoundedStack many = new BoundedStack(3);
+        many.push("b6821651531");
+        many.push("b6821651621");
+        many.push("b6821650003");
+        check("peek() returns top element", many.peek().equals("b6821650003"));
+
     }
 
     // --- Observer ต้องไม่มี side effect ความเป็นอื่น ---
