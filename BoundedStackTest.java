@@ -156,19 +156,27 @@ public class BoundedStackTest {
         }
         check("pop() on empty -> throws IllegalStateException", threwEmpty);
 
-        // เช็คการดึงข้อมูลตัวล่าสุดออกมาและมีพื้นที่ว่างเพิ่มขึ้น
         empty.push("b6821651531"); 
         empty.push("b6821651621");
         empty.push("b6821650003");
         check("pop() -> size 3", empty.size() == 3);
 
-        // ดึงข้อมูลตัวล่าสุดออกมา
+        // เช็คการดึงข้อมูลตัวล่าสุดออกมาและมีพื้นที่ว่างเพิ่มขึ้น
         check("pop() -> returns b6821650003", empty.pop().equals("b6821650003"));
         check("pop() -> size 2", empty.size() == 2);
 
-        // เหลือข้อมูลตัวแรก
-        check("peek() -> b6821651621", empty.peek().equals("b6821651621"));
-
+        // pop ออกจนหมดแล้ว pop อีกครั้งต้องโยน exception ออกไป
+        empty.pop();
+        empty.pop();
+        check("pop() all -> isEmpty() is true", empty.isEmpty());
+        check("pop() all -> size is 0", empty.size() == 0);
+        boolean threwEmptyAfterPop = false;
+        try {
+            empty.pop();
+        } catch (IllegalStateException e) {
+            threwEmptyAfterPop = true;
+        }
+        check("pop() on empty after popping all -> throws IllegalStateException", threwEmptyAfterPop);
 
     }
 

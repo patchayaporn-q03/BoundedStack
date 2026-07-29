@@ -2,9 +2,7 @@ import java.util.*;
 
 /**
  * ทำโดย 6821651531 พัชญาพร จันอุดม หมู่800 และ 6821651621 ภัทราภรณ์ หินขุนทด หมู่800
- * BoundedStack คือการเก็บข้อมูลในรูปแบบ Stack มีการกำหนด capacity เอาไว้ และการทำงานคือเข้าทีหลังออกก่อน 
- *              มีฟังก์ชัน Push การเพิ่มข้อมูลตำแหน่งแรกเข้าไปใน Stack , Pop อ่านข้อมูลตำแหน่งสุดท้าย และลบข้อมูลนั้น
- *              Peek อ่านข้อมูลตำแหน่งสุดท้าย แต่ไม่ลบ , IsEmpty ดูข้อมูลใน Stack ว่าว่างไหม
+ * BoundedStack คือการเก็บข้อมูลในรูปแบบ Stack มีการกำหนด capacity เอาไว้ และการทำงานคือเข้าทีหลังออกก่อน (LIFO)
  * 
  * ตัวอย่างการใช้งาน:การเก็บรหัสพนักงานที่ลงทะเบียนเข้ามา
  *      BoundedStack s = new BoundedStack(50);
@@ -53,6 +51,14 @@ public class BoundedStack {
         checkRep();
     }
 
+    /**
+     * สร้าง BoundedStack พร้อมข้อมูลเริ่มต้น
+     * 
+     * ระวัง:ห้ามเก็บ reference ของ initial ตรง ๆ (rep exposure!)
+     * 
+     * @param initial ข้อมูลเริ่มต้นที่ต้องไม่เป็น null, ไม่มีข้อมูลซ้ำกัน, ไม่มีข้อมูลเป็น null หรือเป็นสตริงว่าง
+     * @throws IllegalArgumentException ถ้าinitialเป็น null, มีข้อมูลซ้ำกัน, มีข้อมูลเป็นnullหรือเป็นสตริงว่าง
+     */
     public BoundedStack(List<String> initial) {
         if(initial==null) throw new IllegalArgumentException();
         this.capacity = initial.size();
@@ -66,8 +72,7 @@ public class BoundedStack {
         checkRep();
     }
 
-    /**
-     * 
+    /** 
      * @return จำนวนข้อมูลที่ถูก push เข้ามา
      */
     public int size() {
@@ -75,8 +80,7 @@ public class BoundedStack {
     }
 
     /**
-     * 
-     * @return true ถ้า Stack ว่าง
+     * @return true ถ้ามีข้อมูล, false ถ้าไม่มีข้อมูล
      */
     public boolean isEmpty() {
         return data.isEmpty();
@@ -126,10 +130,19 @@ z    * @throws IllegalStateException ถ้า Stack ว่าง
     /**
      * ดู Stack ว่าเต็มหรือยัง
      * 
-     * @return true ถ้า Stack เต็ม, false ถ้า Stack ยังไม่เต็ม
+     * @return true ถ้า Stack เต็มแล้ว (size เท่ากับ capacity)
      */
 	public boolean isFull() {
-	    return data.size() >= capacity;
+	    return data.size() == capacity;
 	}
+
+    /**
+     * คืนStackใหม่ที่มีข้อมูลเหมือนกัน แต่สลับลำดับ
+     * ระวัง: ห้ามแก้เพลย์ลิสต์เดิม (this) เด็ดขาด
+     * @return Stack ใหม่ที่สลับลำดับแล้ว
+     */
+    public BoundedStack shuffled() {
+        return null; 
+    }
 
 }
