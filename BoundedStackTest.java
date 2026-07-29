@@ -160,11 +160,11 @@ public class BoundedStackTest {
         empty.push("b6821651531"); 
         empty.push("b6821651621");
         empty.push("b6821650003");
-        check("pop() -> size 2", empty.size() == 3);
+        check("pop() -> size 3", empty.size() == 3);
 
         // ดึงข้อมูลตัวล่าสุดออกมา
-        check("pop() -> returns b6821651621", empty.pop().equals("b6821650003"));
-        check("pop() -> size 1", empty.size() == 1);
+        check("pop() -> returns b6821650003", empty.pop().equals("b6821650003"));
+        check("pop() -> size 2", empty.size() == 2);
 
         // เหลือข้อมูลตัวแรก
         check("peek() -> b6821651621", empty.peek().equals("b6821651621"));
