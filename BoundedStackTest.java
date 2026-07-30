@@ -248,6 +248,32 @@ public class BoundedStackTest {
 
     // --- ทดสอบว่าไม่เกิด representation exposure ---
     private static void testExposure() {
+        System.out.println("\n-- Exposure --");
+
+        // ขาออก: แก้ list ที่ได้จาก data() ต้องไม่กระทบ rep
+        BoundedStack s = new BoundedStack(2);
+        s.push("A01");
+        s.push("A02");
+
+        List<String> got = s.data();
+        got.clear();
+        check("clearing result of data() does not affect BoundedStack",
+                s.size() == 2);
+
+        got = s.data();
+        got.add("injected");
+        check("adding to result of data() does not affect BoundedStack",
+                s.size() == 2 && !s.data().contains("injected"));
+
+        // สองครั้งต้องเป็นคนละ object
+        check("data() returns a fresh list each call",
+                s.data() != s.data());
+
+        // เช็คแก้ไขค่าภายในแล้วpeekไม่เปลี่ยน
+        List<String> checkin = s.data();
+        checkin.set(1, "edit");
+        check("edit list copy data not affect peek BoundedStack",
+                s.peek().equals("A02"));
 
     }
 }
