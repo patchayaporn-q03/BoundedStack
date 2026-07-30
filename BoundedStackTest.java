@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -34,7 +32,7 @@ public class BoundedStackTest {
         testCreators();
         testPush();
         testPop();
-        testpeek();
+        testPeek();
         testObservers();
         testProducer();
         testExposure();
@@ -131,6 +129,22 @@ public class BoundedStackTest {
         }
         check("push when full -> throws IllegalStateException", threwFull);
         check("Size and Peek at capacity", full.size() == 1 && full.peek().equals("b6821651531"));
+
+        // ถ้าเพิ่มค่าติดลบ
+        BoundedStack negative = new BoundedStack(1);
+        negative.push("-1");
+        check("push(\"-1\") accepted", negative.peek().equals("-1"));
+
+        // ถ้า push ค่ามหาศาลเกินขนาดที่กำหนด จะโยนให้ exception
+        String LongString = "A".repeat(BoundedStack.MAX_LONGSTRING + 1);
+        BoundedStack longstring = new BoundedStack(1);
+        boolean threw = false;
+        try {
+            longstring.push(LongString);
+        } catch (IllegalArgumentException e) {
+            threw = true;
+        }
+        check("push long string -> throw IllegalArgumentException", threw);
     }
 
     // การ Pop ข้อมูลที่ผิดเงื่อนไข
@@ -174,7 +188,7 @@ public class BoundedStackTest {
     }
 
     // การอ่านข้อมูลที่ตำแหน่งสุดท้าย
-    private static void testpeek() {
+    private static void testPeek() {
         System.out.println("\n-- Peek --");
 
         // ถ้า Stack ว่าง แล้วเรียก peek() ต้องโยน IllegalStateException
