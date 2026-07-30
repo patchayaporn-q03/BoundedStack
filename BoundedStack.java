@@ -15,6 +15,7 @@ public class BoundedStack {
 
     private final List<String> data;
     private final int capacity;
+    static final int MAX_LONGSTRING = 10000;
     
     // AF(data, capacity) = Stackที่มีความจุสูงสุด capacity
     //  โดยเริ่มจาก data.get(0) เป็นข้อมูลตัวแรกที่ถูก push เข้ามา
@@ -74,7 +75,8 @@ public class BoundedStack {
      */
     public void push(String data){
         if (data == null || data.isEmpty()) throw new IllegalArgumentException();
-        if (isFull()) throw new IllegalStateException("Stack is full: capacity");
+        if (data.length() > MAX_LONGSTRING) throw new IllegalArgumentException("data is long");
+        if (isFull()) throw new IllegalStateException("Stack is full capacity");
         this.data.add(data);
         checkRep();
     }
@@ -100,6 +102,7 @@ public class BoundedStack {
      */
     public String peek(){
         if (data.isEmpty()) throw new IllegalStateException("Stack is empty");
+        checkRep();
         return data.get(data.size() - 1);
     }
 
@@ -108,12 +111,13 @@ public class BoundedStack {
      * 
      * @return true ถ้า Stack เต็มแล้ว (size เท่ากับ capacity)
      */
-	public boolean isFull() {
-	    return data.size() == capacity;
-	}
+    public boolean isFull() {
+        return data.size() == capacity;
+    }
 
     /**
      * สร้าง BoundedStack ตัวใหม่ที่มีข้อมูลและ capacity เหมือนเดิม
+     * ทำหน้าที่เป็นProducer
      * 
      * @return ข้อมูลใหม่ที่ copy ข้อมูลเดิมมา
      */
@@ -123,12 +127,14 @@ public class BoundedStack {
         copy.checkRep();
         return copy;
     }
-    
+
     /**
+     * คืนสำเนาของข้อมูลทั้งหมดใน stack ตามลำดับปัจจุบัน (index 0 = ล่างสุด)
+     * การแก้ไข list ที่คืนค่านี้จะไม่ส่งผลต่อ stack ต้นฉบับ
      * 
-     * @return
+     * @return สำเนาของข้อมูล
      */
     public List<String> data() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return new ArrayList<>(this.data);
     }
 }
